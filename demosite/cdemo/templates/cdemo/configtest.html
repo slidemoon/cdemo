@@ -1,0 +1,113 @@
+{% extends "cdemo/main.html" %}
+
+{% block page %} Cdemo Project Page {% endblock %}
+
+
+{% block active %}
+<ul class="nav nav-pills">
+    <li>
+        <a href="{% url 'cdemo:main' %}">Home</a>
+    </li>
+    <li>
+        <a href="{% url 'cdemo:cproject' %}">Project</a>
+    </li>
+    <li class="active">
+        <a href="{% url 'cdemo:main' %}">Deploy</a>
+    </li>
+</ul>
+{% endblock %}
+
+
+{% block content %}
+<h2>
+    TEST page
+</h2>
+{{ context | safe}}
+
+<table>
+  <tr>
+    <td style="display:none">ROOT.key_1</td>
+    <td>key_1</td>
+    <td>value_1</td> 
+    <td><button type="button" id="b_create">create</button></td>
+    <td><button type="button" id="b_update">update</button></td>
+    <td><button type="button" id="b_delete">delete</button></td>
+  </tr>
+  <tr>
+    <td>ROOT.key_2</td>
+    <td>key_2</td>
+    <td>value_2</td>
+    <td><button type="button" id="b_create">create</button></td>
+    <td><button type="button" id="b_update">update</button></td>
+    <td><button type="button" id="b_delete">delete</button></td> 
+  </tr>
+</table>
+<input type='hidden' value={{context}} id="context"/>
+<form id="config_form" method="POST" action="{% url 'cdemo:test_add_content' %}" >
+    {% csrf_token %}
+    <textarea name="config_content" form="config_form"></textarea>
+    <input type="submit">
+</form>
+<table id="demo"></table>
+
+<script>
+var db_data = {{ context | safe }};
+
+function myFunction(json_obj) {
+    var json_str = JSON.stringify(json_obj)
+    return json_str;
+}
+
+function myFunction2(json_obj, te){
+    var len_num = Object.keys(json_obj).length;
+    for (i in json_obj) {
+        if (te !== undefined) {
+            console.log(te + '.' +i);
+        }
+        else {
+            console.log(i)
+        }
+        var i_value_type = typeof json_obj[i];
+        console.log(i_value_type);
+        if (i_value_type === 'string' || i_value_type === 'number' || i_value_type === 'boolean') {
+            console.log(json_obj[i]);            
+        }
+        else if (i_value_type === 'object') {
+            if  (Array.isArray(json_obj[i])) {
+                var array_list = json_obj[i]
+                var array_length = json_obj[i].length;
+                for (j = 0; j < array_length; j++) {
+                    var j_value_type = typeof array_list[j]
+                    if (j_value_type === 'string' || j_value_type === 'number' || j_value_type === 'boolean') {
+                        console.log('Array postion is ' + j);
+                        console.log(array_list[j]);
+                    }
+                    else if (j_value_type === 'object') {
+                        console.log('Array postion is ' + j);
+                        if (te !== undefined) {
+                            var new_te = te + '.' + i + '.' + j;
+                        }
+                        else {
+                            var new_te = i + '.' + j;
+                        }
+                        myFunction2(array_list[j], new_te)
+                    }
+                }
+            }
+            else {
+                console.log(json_obj[i]);
+                myFunction2(json_obj[i], i);
+            }
+        }
+    } 
+}
+document.getElementById("demo").innerHTML = myFunction(db_data);
+myFunction2(db_data);
+
+
+</script>
+
+
+
+
+{% endblock %}

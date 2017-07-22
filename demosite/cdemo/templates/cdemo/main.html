@@ -1,0 +1,65 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Cdemo</title>
+
+    <meta name="description" content="Source code generated using layoutit.com">
+    <meta name="author" content="LayoutIt!">
+
+    <link href="{% static 'cdemo/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'cdemo/css/style.css' %}" rel="stylesheet">
+
+  </head>
+  <body>
+
+    <div class="container-fluid">
+	<div class="row">
+		<div class="col-md-11">
+			<h3 class="text-center text-primary">
+				{% block page %} Cdemo Main Page {% endblock %}
+			</h3>
+		</div>
+		<div class="col-md-1">
+			<form role="form" action="{% url 'cdemo:logout' %}" method="post">
+			{% csrf_token %}
+				<button type="submit" class="btn btn-primary btn-sm">
+					Logout
+				</button>
+			</form>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+			{% block active %}
+			<ul class="nav nav-pills">
+				<li class="active">
+					<a href="{% url 'cdemo:main' %}">Home</a>
+				</li>
+				<li>
+					<a href="{% url 'cdemo:cproject' %}">Project</a>
+				</li>
+				<li>
+					<a href="{% url 'cdemo:cconfig_test' %}">Deploy</a>
+				</li>
+			</ul>
+			{% endblock %}
+			{% block content %}
+			<h2>
+				Personal Info
+			</h2>
+			{% endblock %}
+		</div>
+	</div>
+</div>
+
+    <script src="{% static 'cdemo/js/jquery.min.js' %}"></script>
+    <script src="{% static 'cdemo/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'cdemo/js/scripts.js' %}"></script>
+  </body>
+</html>
