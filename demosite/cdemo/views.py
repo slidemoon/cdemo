@@ -5,7 +5,10 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from .models import Project, Content
+from django.forms.models import model_to_dict
 
+
+import json
 
 # Create your views here.
 
@@ -53,7 +56,7 @@ def ccreate_project(request):
 
 @login_required(login_url='/cdemo/')
 def cconfig_test(request):
-    c1 = Content.objects.get(id = 6)
+    c1 = Content.objects.get(id = 9)
     context = {'context': c1}
     return render(request, 'cdemo/configtest.html', context)
 
