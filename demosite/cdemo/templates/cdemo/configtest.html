@@ -63,6 +63,10 @@
 var db_data = {{ context | safe }};
 var text = '';
 
+function onUpdate (id) {
+    debugger
+};
+
 function myFunction(json_obj) {
     var json_str = JSON.stringify(json_obj)
     return json_str;
@@ -71,39 +75,51 @@ function myFunction(json_obj) {
 function myFunction2(json_obj, te){
     var len_num = Object.keys(json_obj).length;
     var i;
+    var b_id = '';
     for (i in json_obj) {
         if (te !== undefined) {
             console.log(te + '.' +i);
-            text += '<td>ROOT.' + te + '.' + i +'</td>';
+            //text += '<td>ROOT.' + te + '.' + i +'</td>';
+            text += '<td>' + te + '.' + i + '<input type="text" name="ROOT.' + te + '.' + i + '"';
+            b_id = 'ROOT.' + te + '.' + i;
         }
         else {
-            console.log(i)
-            text += '<tr><td>ROOT.' + i +'</td>';
+            console.log(i);
+            //text += '<tr><td>ROOT.' + i +'</td>';
+            text += '<tr><td>' + i + '<input type="text" name="ROOT.' + i + '"';
+            b_id = 'ROOT.' + i;
         }
         var i_value_type = typeof json_obj[i];
         console.log(i_value_type);
         if (i_value_type === 'string' || i_value_type === 'number' || i_value_type === 'boolean') {
             console.log(json_obj[i]);
-            text += '<td>' + json_obj[i] + '</td>' + '<td>' + i_value_type + '</td>' + '<td><button type="button" id="b_insert">insert</button></td><td><button type="button" id="b_update">update</button></td><td><button type="button" id="b_delete">delete</button></td>'           
+            //text += '<td>' + json_obj[i] + '</td>' + '<td>' + i_value_type + '</td>' + '<td><button type="button" id="b_insert">insert</button></td><td><button type="button" id="b_update">update</button></td><td><button type="button" id="b_delete">delete</button></td>';
+            text += 'value="' + json_obj[i] + '" readonly></td><td><button type="button" id="' + b_id +'_insert">insert</button><button type="button" onClick=onUpdate("' + b_id + '") id="' + b_id +'_update">update</button><button type="button" id="' + b_id +'_delete">delete</button></td>';           
         }
         else if (i_value_type === 'object') {
             if  (Array.isArray(json_obj[i])) {
+                text += 'style="display: none">';
                 var array_list = json_obj[i];
                 var array_length = json_obj[i].length;
                 for (j = 0; j < array_length; j++) {
-                    var j_value_type = typeof array_list[j]
-                    console.log('WOW ' + i);
+
+                    var j_value_type = typeof array_list[j];
                     if (j_value_type === 'string' || j_value_type === 'number' || j_value_type === 'boolean') {
                         console.log('Array postion is ' + j);
                         if (te !== undefined) {
-                            console.log('WOW2 ' + i);
-                            text += '<td>' + 'ROOT.' + te + '.' + i + '[' + j + ']' + '</td>';
+                            //text += '<td>' + 'ROOT.' + te + '.' + i + '[' + j + ']' + '</td>';
+                            text += '<td>' + te + '.' + i + '[' + j + ']' + '<input type="text" name="ROOT.' + te + '.' + i + '[' + j + ']' + '"';
+                            b_id_list = b_id + '[' + j + ']';
                         }
                         else {
-                            text += '<td>' + 'ROOT.' + i + '[' + j + ']' + '</td>';
+                            //text += '<td>' + 'ROOT.' + i + '[' + j + ']' + '</td>';
+                            text += '<td>' + i + '[' + j + ']' + '<input type="text" name="ROOT.' + i + '[' + j + ']' + '"';
+                            b_id_list = b_id + '[' + j + ']';
                         }
                         console.log(array_list[j]);
-                        text += '<td>' + array_list[j] + '</td>' + '<td>' + j_value_type + '</td>' + '<td><button type="button" id="b_insert">insert</button></td><td><button type="button" id="b_update">update</button></td><td><button type="button" id="b_delete">delete</button></td>';
+                        //text += '<td>' + array_list[j] + '</td>' + '<td>' + j_value_type + '</td>' + '<td><button type="button" id="b_insert">insert</button></td><td><button type="button" id="b_update">update</button></td><td><button type="button" id="b_delete">delete</button></td>';
+                        console.log()
+                        text += 'value="' + array_list[j] + '" readonly></td><td><button type="button" id="' + b_id_list +'_insert">insert</button><button type="button" onClick=onUpdate("' + b_id_list + '") id="' + b_id_list +'_update">update</button><button type="button" id="' + b_id_list +'_delete">delete</button></td>';
                     }
                     else if (j_value_type === 'object') {
                         console.log('Array postion is ' + j);
@@ -121,9 +137,11 @@ function myFunction2(json_obj, te){
                 //console.log(json_obj[i]);
                 if (te !== undefined) {
                     var new_te = te + '.' + i; 
+                    text += 'style="display: none">';
                 }
                 else {
                     var new_te = i;
+                    text += 'style="display: none">';
                 }
                 myFunction2(json_obj[i], new_te);
             }
@@ -133,7 +151,6 @@ function myFunction2(json_obj, te){
 }
 document.getElementById("demo").innerHTML = myFunction(db_data);
 document.getElementById("demo2").innerHTML = myFunction2(db_data);
-
 
 
 </script>
